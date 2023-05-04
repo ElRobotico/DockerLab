@@ -1,0 +1,41 @@
+version: "3"
+volumes:
+  nextcloud-data:
+  nextcloud-db:
+networks:
+  frontend:
+    name: npm_frontend
+    external: true
+  backend:
+    name: npm_backend
+    external: true
+services:
+  nextcloud-app:
+    image: nextcloud
+    container_name: nextcloud-app
+    restart: unless-stopped
+    volumes:
+      - nextcloud-data:/var/www/html
+    environment:
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_HOST=nextcloud-db
+    networks:
+      - frontend
+      - backend
+
+  nextcloud-db:
+    image: mariadb
+    container_name: nextcloud-db
+    restart: unless-stopped
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    volumes:
+      - nextcloud-db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+    networks:
+      - backend
