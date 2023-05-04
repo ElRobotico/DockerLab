@@ -1,0 +1,7 @@
+labels:
+      traefik.enable: 'true'
+      traefik.http.routers.jellyfin.entrypoints: 'web, websecure'
+      traefik.http.routers.jellyfin.rule: 'Host(`service.example.com`)'
+      traefik.http.routers.jellyfin.tls: 'true'
+      traefik.http.routers.jellyfin.tls.certresolver: 'production'
+      traefik.http.services.jellyfin-svc.loadBalancer.server.port: '80'
