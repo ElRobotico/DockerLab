@@ -1,0 +1,30 @@
+version: "3"
+volumes:
+  jellyfin:
+networks:
+  frontend:
+    name: npm_frontend
+    external: true
+  backend:
+    name: npm_backend
+    external: true
+services:
+  jellyfin:
+    image: linuxserver/jellyfin:latest
+    container_name: jellyfin
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Rome # Change TZ
+      - JELLYFIN_PublishedServerUrl= ${INSTANCE_URL}
+    volumes:
+      - jellyfin:/config
+      - /home/ubuntu/shows:/data/tvshows
+      - /home/ubuntu/movies:/data/movies
+      - /home/ubuntu/courses:/data/courses
+    ports:
+      - 8096:8096
+    networks:
+      - frontend
+      - backend
