@@ -1,0 +1,47 @@
+version: '3.3'
+networks:
+ frontend:
+    name: npm_frontend
+    external: true
+ backend:
+    name: npm_backend
+    external: true
+services:
+   wordpress:
+     depends_on:
+       - db
+     image: wordpress:latest
+     container_name: wordpress
+     volumes:
+       - wordpress_files:/var/www/html
+     ports:
+       - "6969:80"
+     expose:
+       - 80
+     restart: always
+     environment:
+       WORDPRESS_DB_HOST: wordpress_db:3306
+       WORDPRESS_DB_USER: wordpress
+       WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+       WORDPRESS_DB_NAME: wordpress
+     networks:
+       - frontend
+       - backend
+
+   db:
+     image: mysql:5.7
+     container_name: wordpress_db
+     volumes:
+       - db_data:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+     networks:
+       - frontend
+       - backend
+volumes:
+    wordpress_files:
+    db_data:
