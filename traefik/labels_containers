@@ -1,7 +1,7 @@
 labels:
       traefik.enable: 'true'
-      traefik.http.routers.jellyfin.entrypoints: 'web, websecure'
-      traefik.http.routers.jellyfin.rule: 'Host(`service.example.com`)'
-      traefik.http.routers.jellyfin.tls: 'true'
-      traefik.http.routers.jellyfin.tls.certresolver: 'production'
-      traefik.http.services.jellyfin-svc.loadBalancer.server.port: '80'
+      traefik.http.routers.SERVICENAME.entrypoints: 'web, websecure'
+      traefik.http.routers.SERVICENAME.rule: 'Host(`service.example.com`)'
+      traefik.http.routers.SERVICENAME.tls: 'true'
+      traefik.http.routers.SERVICENAME.tls.certresolver: 'production'
+      traefik.http.services.SERVICENAME-svc.loadBalancer.server.port: 'SERVICEPORT'
