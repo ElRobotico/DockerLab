@@ -1,0 +1,32 @@
+version: "2.1"
+networks:
+  npm_frontend:
+    external: true
+# These two services must use the same network to communicate, in this case we are goig to use the nginx proxy manager network
+services:
+  your_spotify:
+    image: lscr.io/linuxserver/your_spotify:latest
+    container_name: your_spotify
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Rome
+      - APP_URL=https://spotify.mydomain.com
+      - SPOTIFY_PUBLIC= #insert here your your spotify public id
+      - SPOTIFY_SECRET= #insert here your your spotify secret key
+      - CORS=all # this env allow the connection to all the ip addres
+      - MONGO_ENDPOINT=mongodb://mongo:27017/your_spotify
+#    ports: #if you use a reverse proxy you don't need to specify the container ports
+#      - 8080:80
+#      - 4343:443
+    restart: unless-stopped
+    networks:
+      - npm_frontend
+
+  mongo:
+    container_name: mongo
+    image: mongo:6
+    volumes:
+      - /path/to/data/db:/data/db
+    networks:
+      - npm_frontend
