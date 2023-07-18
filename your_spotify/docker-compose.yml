@@ -14,8 +14,8 @@ services:
       - PGID=1000
       - TZ=Europe/Rome
       - APP_URL=https://spotify.mydomain.com
-      - SPOTIFY_PUBLIC= #insert here your your spotify public id
-      - SPOTIFY_SECRET= #insert here your your spotify secret key
+      - SPOTIFY_PUBLIC=yourid #insert here your your spotify public id
+      - SPOTIFY_SECRET=yourkey #insert here your your spotify secret key
       - CORS=all # this env allow the connection to all the ip addres
       - MONGO_ENDPOINT=mongodb://mongo:27017/your_spotify
 #    ports: #if you use a reverse proxy you don't need to specify the container ports
