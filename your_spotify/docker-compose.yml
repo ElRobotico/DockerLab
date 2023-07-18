@@ -4,6 +4,7 @@ networks:
     external: true
 # These two services must use the same network to communicate, in this case we are goig to use the nginx proxy manager network
 # Remember to add the correct redirect URI (https://spotify.mydomain.com/api/oauth/spotify/callback) in your spotify app at https://developer.spotify.com/dashboard
+# You also need to add your spotify username and email to the developer user in your spotify app to use all the features
 
 services:
   your_spotify:
