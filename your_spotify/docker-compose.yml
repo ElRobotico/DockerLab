@@ -3,6 +3,8 @@ networks:
   npm_frontend:
     external: true
 # These two services must use the same network to communicate, in this case we are goig to use the nginx proxy manager network
+# Remember to add the correct redirect URI (https://spotify.mydomain.com/api/oauth/spotify/callback) in your spotify app at https://developer.spotify.com/dashboard
+
 services:
   your_spotify:
     image: lscr.io/linuxserver/your_spotify:latest
