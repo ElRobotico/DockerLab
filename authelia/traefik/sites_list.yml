@@ -1,0 +1,65 @@
+http:
+ #region routers 
+  routers:
+    your_service_name:
+      entryPoints:
+        - "https"
+      rule: "Host(`flix.example.com`)"
+      middlewares:
+        - default-middlewares
+      service: your_service_name
+
+  #region services 
+  services:
+    your_service_name:
+      loadBalancer:
+        servers:
+          - url: "http://your_service_name:your_serviceport"
+        passHostHeader: true
+
+  middlewares:
+    default-middlewares:
+      chain:
+        middlewares:
+          - default-headers
+          - authelia
+          - compress-gzip
+    compress-gzip:
+      compress: {}
+    limit:
+      buffering:
+        maxRequestBodyBytes: 200000000
+        maxResponseBodyBytes: 200000000
+        memRequestBodyBytes: 200000000
+        memResponseBodyBytes: 200000000
+    addprefix-pihole:
+      addPrefix:
+        prefix: "/admin"
+    authelia:
+      forwardAuth:
+        address: "http://authelia:9091/api/verify?rd=https://auth.example.com"
+        trustForwardHeader: true
+        authResponseHeaders:
+          - Remote-User
+          - Remote-Groups
+          - Remote-Name
+          - Remote-Email
+    default-headers:
+      headers:
+        frameDeny: true
+        browserXssFilter: true
+        contentTypeNosniff: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 15552000
+        customFrameOptionsValue: SAMEORIGIN
+        referrerPolicy: "strict-origin-when-cross-origin"
+        customRequestHeaders:
+          X-Forwarded-Proto: https
+        customResponseHeaders:
+          X-Robots-Tag: "none,noarchive,nosnippet,notranslate,noimageindex"
+          server: ""
+          X-Forwarded-Proto: "https,wss"
+        hostsProxyHeaders:
+          - "X-Forwarded-Host"

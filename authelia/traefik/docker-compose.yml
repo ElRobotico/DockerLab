@@ -1,0 +1,73 @@
+version: '3'
+#Networks
+networks:
+  default:
+
+services:
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - CF_API_EMAIL=cloudflare@mail
+      - CF_DNS_API_TOKEN=cloudflare_token
+      - TZ=Europe/Rome
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/traefik/traefik_config:/traefik_config
+      - /etc/traefik/traefik_cert:/traefik_cert
+      - /etc/traefik/traefik_static:/traefik_static:ro
+      - /etc/traefik/traefik_logs:/logs
+    command:
+      - --configFile=/traefik_static/traefik.yml
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.entrypoints=https"
+      - "traefik.http.routers.api.rule=Host(`traefik.example.com`)"
+      - "traefik.http.routers.api.service=api@internal"
+      - "traefik.http.routers.api.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.users=user:passwordhash"
+
+  authelia:
+    image: authelia/authelia
+    container_name: authelia
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      - traefik
+      - redis
+    volumes:
+      - /etc/authelia/authelia_config:/config
+      - /etc/authelia/authelia_logs:/logs
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.authelia.rule=Host(`auth.example.com`)'
+      - 'traefik.http.routers.authelia.entrypoints=https'
+      - 'traefik.http.routers.authelia.middlewares=default-headers@file'
+    expose:
+      - 9091
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Rome
+    healthcheck:
+      disable: false
+
+  redis:
+    image: redis:alpine
+    container_name: authelia_redis
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/redis/authelia_redis:/data
+    expose:
+      - 6379
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Rome
+    command: redis-server --appendonly yes

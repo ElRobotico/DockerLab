@@ -1,0 +1,108 @@
+experimental:
+  http3: true
+
+global:
+  # Send anonymous usage data
+  sendAnonymousUsage: false
+  checkNewVersion: true
+
+log:
+  filePath: "/logs/logfile.log"
+  level: INFO
+  format: common
+
+accessLog:
+  filePath: "/logs/access.log"
+#  bufferingSize: 20
+  fields:
+    defaultMode: keep
+    names:
+      StartUTC: drop
+
+api:
+  dashboard: true
+  debug: true
+  
+entryPoints:
+  http:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: https
+          scheme: https
+          permanent: true
+  https:
+    http3: {}
+    address: ":443"
+    http:
+      tls: 
+        # Generate a wildcard domain certificate
+        certResolver: cloudflare
+        domains:
+          - main: example.com
+            sans:
+              - '*.example.com'
+          # - main: domain2.com
+          #   sans:
+          #     - '*.domain2.com'
+    # #CloudFlareIp; enable if you use cloudflare proxy on your domain
+    # forwardedHeaders:
+    #   trustedIPs:
+    #     - "173.245.48.0/20"
+    #     - "103.21.244.0/22"
+    #     - "103.22.200.0/22"
+    #     - "103.31.4.0/22"
+    #     - "141.101.64.0/18"
+    #     - "108.162.192.0/18"
+    #     - "190.93.240.0/20"
+    #     - "188.114.96.0/20"
+    #     - "197.234.240.0/22"
+    #     - "198.41.128.0/17"
+    #     - "162.158.0.0/15"
+    #     - "104.16.0.0/13"
+    #     - "104.24.0.0/14"
+    #     - "172.64.0.0/13"
+    #     - "131.0.72.0/22"
+    #     - "2400:cb00::/32"
+    #     - "2606:4700::/32"
+    #     - "2803:f800::/32"
+    #     - "2405:b500::/32"
+    #     - "2405:8100::/32"
+    #     - "2a06:98c0::/29"
+    #     - "2c0f:f248::/32"
+serversTransport:
+  insecureSkipVerify: true
+providers:
+  providersThrottleDuration: 2s
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+    watch: true
+  file:
+    directory: "/traefik_config"
+    watch: true
+
+certificatesResolvers:
+  cloudflare:
+    acme:
+      email: youremail@example.com
+      storage: /traefik_cert/acme.json
+      dnsChallenge:
+        provider: cloudflare
+        resolvers:
+          - "1.1.1.1:53"
+          - "1.0.0.1:53"
+
+# Use this section if you use your own certificates remenber to remove the previous section
+# #(Optional) Overwrite Default Certificates
+# tls:
+#  stores:
+#    default:
+#      defaultCertificate:
+#        certFile: /etc/traefik/traefik_cert/cert.pem
+#        keyFile: /etc/traefik/traefik_cert/cert-key.pem
+# #(Optional) Disable TLS version 1.0 and 1.1
+#  options:
+#    default:
+#      minVersion: VersionTLS12
