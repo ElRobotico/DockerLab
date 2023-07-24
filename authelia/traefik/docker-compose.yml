@@ -14,8 +14,6 @@ services:
       - 80:80
       - 443:443
     environment:
-      - CF_API_EMAIL=cloudflare@mail
-      - CF_DNS_API_TOKEN=cloudflare_token
       - TZ=Europe/Rome
     volumes:
       - /etc/localtime:/etc/localtime:ro
