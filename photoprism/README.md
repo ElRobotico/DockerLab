@@ -1,5 +1,8 @@
 # Photoprism
 
-A complete service to manage your photo
+A complete service to manage your photo and video
 
-## Secure your Password
+## How to use admin user without expose the password in compose file
+### 1.
+### 2.
+### 3.
