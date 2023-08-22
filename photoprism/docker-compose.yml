@@ -6,7 +6,7 @@ services:
   photoprism:
     container_name: photoprism
     image: photoprism/photoprism:latest
-    restart: unless-stoppep
+    restart: unless-stopped
     stop_grace_period: 10s
     depends_on:
       - mariadb
