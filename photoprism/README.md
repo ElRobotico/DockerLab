@@ -1,5 +1,5 @@
 # Photoprism
-A complete service to manage your photo and video, follow the the instruction below to manage the admin user
+A complete service to manage your photo and video, follow the instruction below to manage the admin user
 
 ## How to use admin user without expose the password in compose file
 ### 1. Env File
